@@ -8,7 +8,7 @@ public class TaskItemTests
 {
 
 	[Fact]
-	public void Import_GivenLineWithDescription_ShouldSetDescription()
+	public void Import_GivenLineWithDescription_ShouldSetFullDescriptionAndDescription()
 	{
 		// Arrange
 		var taskItem = new TaskItem();
@@ -16,13 +16,13 @@ public class TaskItemTests
 		string priority = "(A)";
 		string dueDate = "2022-01-01";
 		string createDate = "2022-01-01";
-		string taskDescription = "description of the task +test @home @work +project1 +project2";
+		string taskFullDescription = "description of the +test @home task @home @work +project1 +project2";
 
 		// Act
-		taskItem.Import($"{completed} {priority} {dueDate} {createDate} {taskDescription}");
+		taskItem.Import($"{completed} {priority} {dueDate} {createDate} {taskFullDescription}");
 
 		// Assert
-		Assert.Equal(taskDescription, taskItem.Description);
+		Assert.Equal(taskFullDescription, taskItem.Description);
 	}
 
 	[Fact]
@@ -109,5 +109,25 @@ public class TaskItemTests
 
 		// Assert
 		Assert.Equal(expected, taskItem.Metadata);
+	}
+
+	[Fact]
+	public void ToString_GivenLineFull_ShouldReturnTheSame()
+	{
+		// Arrange
+		var taskItem = new TaskItem();
+		string completed = "x";
+		string priority = "(A)";
+		string dueDate = "2022-01-01";
+		string createDate = "2022-01-01";
+		string taskDescription = "description of the task +test @home @work +project1 +project2";
+		string raw = $"{completed} {priority} {dueDate} {createDate} {taskDescription}";
+
+		// Act
+		taskItem.Import(raw);
+		var result = taskItem.ToString();
+
+		// Assert
+		Assert.Equal(raw, result);
 	}
 }
