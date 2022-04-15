@@ -35,4 +35,30 @@ public class TaskItemManagerTests
 		Assert.Equal("test2", taskItems[1].Projects[0]);
 		Assert.Equal("project3", taskItems[1].Projects[1]);
 	}
+
+	[Fact]
+	public void AddTask_GivenTaskItem_ShouldAddTaskItemToFile()
+	{
+		// Arrange
+		string fileText = $"1 @home @work +project1 +project2{Environment.NewLine}2 +test2 @home2 @work2 +project3 +project4";
+		var fileSystem = new Mock<IFileSystem>();
+		fileSystem.Setup(x => x.File.Exists(It.IsAny<string>())).Returns(true);
+		fileSystem.Setup(x => x.File.ReadAllText(It.IsAny<string>())).Returns(fileText);
+
+		string appendedLine = "";
+		fileSystem.Setup(x => x.File.AppendAllText(It.IsAny<string>(), It.IsAny<string>())).Callback((string path, string text) =>
+		{
+			appendedLine = text;
+		});
+		var taskItemManager = new TaskItemManager(fileSystem.Object);
+
+		// Act
+		var taskItemString = "3 @home2 @work2 +project3 +project4";
+		taskItemManager.AddTask(taskItemString);
+		string expected = $"{Environment.NewLine}{taskItemString}{Environment.NewLine}";
+
+		// Assert
+		fileSystem.Verify(x => x.File.AppendAllText(It.IsAny<string>(), It.IsAny<string>()), Times.Once);
+		Assert.Equal(expected, appendedLine);
+	}
 }

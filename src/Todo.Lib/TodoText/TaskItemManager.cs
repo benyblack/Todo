@@ -24,4 +24,16 @@ public class TaskItemManager
 		}
 		return taskItems;
 	}
+
+	public void AddTask(string taskItemString)
+	{
+		TaskItem task = new(taskItemString);
+		var text = _fileSystem.File.ReadAllText(_filePath);
+		string line = task.ToString() + Environment.NewLine;
+		if (!text.EndsWith(Environment.NewLine))
+		{
+			line = Environment.NewLine + line;
+		}
+		_fileSystem.File.AppendAllText(_filePath, line);
+	}
 }

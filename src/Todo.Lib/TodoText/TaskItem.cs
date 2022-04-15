@@ -13,6 +13,16 @@ public class TaskItem
 	public string[]? Contexts { get; private set; }
 	public Dictionary<string, string>? Metadata { get; private set; }
 
+	public TaskItem()
+	{
+
+	}
+
+	public TaskItem(string line)
+	{
+		Import(line);
+	}
+
 	public void Import(string line)
 	{
 		var priorityRegex = new Regex(@"\(([A-Z])\)");
