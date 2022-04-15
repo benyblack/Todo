@@ -28,9 +28,13 @@ public class TaskItemManager
 	public void AddTask(string taskItemString)
 	{
 		TaskItem task = new(taskItemString);
+		if (!_fileSystem.File.Exists(_filePath))
+		{
+			_fileSystem.File.Create(_filePath).Close();
+		}
 		var text = _fileSystem.File.ReadAllText(_filePath);
 		string line = task.ToString() + Environment.NewLine;
-		if (!text.EndsWith(Environment.NewLine))
+		if (!text.EndsWith(Environment.NewLine) && !string.IsNullOrEmpty(text))
 		{
 			line = Environment.NewLine + line;
 		}

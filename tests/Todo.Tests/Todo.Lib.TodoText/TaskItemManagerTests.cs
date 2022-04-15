@@ -61,4 +61,30 @@ public class TaskItemManagerTests
 		fileSystem.Verify(x => x.File.AppendAllText(It.IsAny<string>(), It.IsAny<string>()), Times.Once);
 		Assert.Equal(expected, appendedLine);
 	}
+
+	[Fact]
+	public void AddTask_GivenFileIsEmpty_ShouldAddTaskNotAddNewlineAtBeginning()
+	{
+		// Arrange
+		string fileText = $"";
+		var fileSystem = new Mock<IFileSystem>();
+		fileSystem.Setup(x => x.File.Exists(It.IsAny<string>())).Returns(true);
+		fileSystem.Setup(x => x.File.ReadAllText(It.IsAny<string>())).Returns(fileText);
+
+		string appendedLine = "";
+		fileSystem.Setup(x => x.File.AppendAllText(It.IsAny<string>(), It.IsAny<string>())).Callback((string path, string text) =>
+		{
+			appendedLine = text;
+		});
+		var taskItemManager = new TaskItemManager(fileSystem.Object);
+
+		// Act
+		var taskItemString = "3 @home2 @work2 +project3 +project4";
+		taskItemManager.AddTask(taskItemString);
+		string expected = $"{taskItemString}{Environment.NewLine}";
+
+		// Assert
+		fileSystem.Verify(x => x.File.AppendAllText(It.IsAny<string>(), It.IsAny<string>()), Times.Once);
+		Assert.Equal(expected, appendedLine);
+	}
 }
