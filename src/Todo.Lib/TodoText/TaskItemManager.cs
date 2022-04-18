@@ -84,4 +84,29 @@ public class TaskItemManager
 		}
 		_fileSystem.File.WriteAllLines(_filePath, newLines);
 	}
+
+	public void Mark(int lineNumber)
+	{
+		if (!_fileSystem.File.Exists(_filePath))
+		{
+			_fileSystem.File.Create(_filePath).Close();
+		}
+		var lines = _fileSystem.File.ReadAllLines(_filePath);
+		var newLines = new List<string>();
+		for (int i = 0; i < lines.Length; i++)
+		{
+			if (i == lineNumber - 1)
+			{
+				var l = lines[i];
+				var taskItem = new TaskItem(l);
+				taskItem.Mark();
+				newLines.Add(taskItem.ToString());
+			}
+			else
+			{
+				newLines.Add(lines[i]);
+			}
+		}
+		_fileSystem.File.WriteAllLines(_filePath, newLines);
+	}
 }

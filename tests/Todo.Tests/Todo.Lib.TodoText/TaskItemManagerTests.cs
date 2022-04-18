@@ -160,4 +160,30 @@ public class TaskItemManagerTests
 		fileSystem.Verify(x => x.File.WriteAllLines(It.IsAny<string>(), It.IsAny<List<string>>()), Times.Once);
 		Assert.Equal(expected, editedFiletext);
 	}
+
+	[Fact]
+	public void Mark_GivenUndoneTask_MarkTaskAsDone()
+	{
+		// Arrange
+		string fileText = $"1 @home @work +project1 +project2{Environment.NewLine}2 +test2 @home2 @work2 +project3 +project4";
+		var fileSystem = new Mock<IFileSystem>();
+		fileSystem.Setup(x => x.File.Exists(It.IsAny<string>())).Returns(true);
+		fileSystem.Setup(x => x.File.ReadAllLines(It.IsAny<string>())).Returns(fileText.Split(Environment.NewLine));
+		string editedFiletext = "";
+		fileSystem.Setup(x => x.File.WriteAllLines(It.IsAny<string>(), It.IsAny<List<string>>()))
+						.Callback((string path, IEnumerable<string> lines) =>
+						{
+							editedFiletext = string.Join(Environment.NewLine, lines);
+						}).Verifiable();
+
+
+		var taskItemManager = new TaskItemManager(fileSystem.Object);
+		string expected = $"1 @home @work +project1 +project2{Environment.NewLine}x 2 +test2 @home2 @work2 +project3 +project4";
+
+		// Act
+		taskItemManager.Mark(2);
+
+		// Assert
+		Assert.Equal(expected, editedFiletext);
+	}
 }

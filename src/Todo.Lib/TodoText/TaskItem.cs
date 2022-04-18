@@ -73,4 +73,9 @@ public class TaskItem
 			items.Add(this.Description);
 		return string.Join(" ", items);
 	}
+
+	internal void Mark()
+	{
+		IsCompleted = !IsCompleted;
+	}
 }
