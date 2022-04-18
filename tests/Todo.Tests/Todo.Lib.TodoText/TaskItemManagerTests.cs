@@ -1,4 +1,6 @@
 using System;
+using System.Collections.Generic;
+using System.IO;
 using System.IO.Abstractions;
 using Moq;
 using Todo.Lib.TodoText;
@@ -36,6 +38,21 @@ public class TaskItemManagerTests
 		Assert.Equal("project3", taskItems[1].Projects[1]);
 	}
 
+	[Fact]
+	public void GetAll_GivenFileWDoesNotExists_ShouldReturnEmptyList()
+	{
+		// Arrange
+		var fileSystem = new Mock<IFileSystem>();
+		fileSystem.Setup(x => x.File.Exists(It.IsAny<string>())).Returns(false);
+		fileSystem.Setup(x => x.File.ReadAllLines(It.IsAny<string>())).Throws(new FileNotFoundException());
+		var taskItemManager = new TaskItemManager(fileSystem.Object);
+
+		// Act
+		var taskItems = taskItemManager.GetAll();
+
+		// Assert
+		Assert.Empty(taskItems);
+	}
 	[Fact]
 	public void AddTask_GivenTaskItem_ShouldAddTaskItemToFile()
 	{
@@ -86,5 +103,61 @@ public class TaskItemManagerTests
 		// Assert
 		fileSystem.Verify(x => x.File.AppendAllText(It.IsAny<string>(), It.IsAny<string>()), Times.Once);
 		Assert.Equal(expected, appendedLine);
+	}
+
+	[Fact]
+	public void RemoveTask_GivenRowNumber_RemoveTheLineFromFile()
+	{
+		// Arrange
+		string fileText = $"1 @home @work +project1 +project2{Environment.NewLine}2 +test2 @home2 @work2 +project3 +project4";
+		var fileSystem = new Mock<IFileSystem>();
+		fileSystem.Setup(x => x.File.Exists(It.IsAny<string>())).Returns(true);
+		fileSystem.Setup(x => x.File.ReadAllLines(It.IsAny<string>())).Returns(fileText.Split(Environment.NewLine));
+
+		string editedFiletext = "";
+		fileSystem.Setup(x => x.File.WriteAllLines(It.IsAny<string>(), It.IsAny<List<string>>()))
+						.Callback((string path, IEnumerable<string> lines) =>
+						{
+							editedFiletext = string.Join(Environment.NewLine, lines);
+						}).Verifiable();
+
+
+		var taskItemManager = new TaskItemManager(fileSystem.Object);
+
+		// Act
+		taskItemManager.RemoveTask(2);
+		string expected = $"1 @home @work +project1 +project2";
+
+		// Assert
+		fileSystem.Verify(x => x.File.WriteAllLines(It.IsAny<string>(), It.IsAny<List<string>>()), Times.Once);
+		Assert.Equal(expected, editedFiletext);
+	}
+
+	[Fact]
+	public void EditTask_GivenRowNumberAndText_OverwriteTheLineFromFile()
+	{
+		// Arrange
+		string fileText = $"1 @home @work +project1 +project2{Environment.NewLine}2 +test2 @home2 @work2 +project3 +project4";
+		var fileSystem = new Mock<IFileSystem>();
+		fileSystem.Setup(x => x.File.Exists(It.IsAny<string>())).Returns(true);
+		fileSystem.Setup(x => x.File.ReadAllLines(It.IsAny<string>())).Returns(fileText.Split(Environment.NewLine));
+
+		string editedFiletext = "";
+		fileSystem.Setup(x => x.File.WriteAllLines(It.IsAny<string>(), It.IsAny<List<string>>()))
+						.Callback((string path, IEnumerable<string> lines) =>
+						{
+							editedFiletext = string.Join(Environment.NewLine, lines);
+						}).Verifiable();
+
+
+		var taskItemManager = new TaskItemManager(fileSystem.Object);
+
+		// Act
+		taskItemManager.EditTask(2, "3 @home2 @work2 +project3 +project4");
+		string expected = $"1 @home @work +project1 +project2{Environment.NewLine}3 @home2 @work2 +project3 +project4";
+
+		// Assert
+		fileSystem.Verify(x => x.File.WriteAllLines(It.IsAny<string>(), It.IsAny<List<string>>()), Times.Once);
+		Assert.Equal(expected, editedFiletext);
 	}
 }

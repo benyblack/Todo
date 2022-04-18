@@ -14,6 +14,10 @@ public class TaskItemManager
 
 	public List<TaskItem> GetAll()
 	{
+		if (!_fileSystem.File.Exists(_filePath))
+		{
+			return new List<TaskItem>();
+		}
 		var lines = _fileSystem.File.ReadAllLines(_filePath);
 		var taskItems = new List<TaskItem>();
 		foreach (var line in lines)
@@ -39,5 +43,45 @@ public class TaskItemManager
 			line = Environment.NewLine + line;
 		}
 		_fileSystem.File.AppendAllText(_filePath, line);
+	}
+
+	public void RemoveTask(int lineNumber)
+	{
+		if (!_fileSystem.File.Exists(_filePath))
+		{
+			_fileSystem.File.Create(_filePath).Close();
+		}
+		var lines = _fileSystem.File.ReadAllLines(_filePath);
+		var newLines = new List<string>();
+		for (int i = 0; i < lines.Length; i++)
+		{
+			if (i != lineNumber - 1)
+			{
+				newLines.Add(lines[i]);
+			}
+		}
+		_fileSystem.File.WriteAllLines(_filePath, newLines);
+	}
+
+	public void EditTask(int lineNumber, string newDescrioption)
+	{
+		if (!_fileSystem.File.Exists(_filePath))
+		{
+			_fileSystem.File.Create(_filePath).Close();
+		}
+		var lines = _fileSystem.File.ReadAllLines(_filePath);
+		var newLines = new List<string>();
+		for (int i = 0; i < lines.Length; i++)
+		{
+			if (i == lineNumber - 1)
+			{
+				newLines.Add(newDescrioption);
+			}
+			else
+			{
+				newLines.Add(lines[i]);
+			}
+		}
+		_fileSystem.File.WriteAllLines(_filePath, newLines);
 	}
 }
