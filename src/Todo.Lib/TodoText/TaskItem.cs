@@ -42,11 +42,13 @@ public class TaskItem
 		CompletionDate = !string.IsNullOrEmpty(completionDate) ? DateTime.Parse(completionDate) : null;
 		CreateDate = !string.IsNullOrEmpty(creationDate) ? DateTime.Parse(creationDate) : null;
 
-		Projects = projectRegex.Matches(line).Select(x => x.Groups[2].Value).ToArray();
-		Contexts = contextRegex.Matches(line).Select(x => x.Groups[2].Value).ToArray();
+		Projects = projectRegex.Matches(line).Select(x => x.Groups[2].Value).Distinct().ToArray();
+		Contexts = contextRegex.Matches(line).Select(x => x.Groups[2].Value).Distinct().ToArray();
 
 		var metaKeyVals = metadataRegex.Matches(line).Select(x => x.Value).ToArray();
-		Metadata = metaKeyVals.Select(x => x.Split(':')).ToDictionary(x => x[0].Trim(), x => x[1].Trim());
+		Metadata = metaKeyVals.Distinct()
+							  .Select(x => x.Split(':'))
+							  .ToDictionary(x => x[0].Trim(), x => x[1].Trim());
 
 		var description = completedRegex.Replace(line, "", 1);
 		description = priorityRegex.Replace(description, "", 1);
