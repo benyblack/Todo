@@ -2,6 +2,7 @@ using System;
 using System.Collections.Generic;
 using Todo.Lib.TodoText;
 using Xunit;
+using Xunit.Categories;
 
 namespace Todo.Tests.Todo.Lib.TodoText;
 public class TaskItemTests
@@ -91,10 +92,11 @@ public class TaskItemTests
 		taskItem.Import("x 1 +test @home @work +project1 +project2");
 
 		// Assert
-		Assert.Equal(new string[] { "test", "project1", "project2" }, taskItem.Projects);
+		Assert.Equal(new [] { "test", "project1", "project2" }, taskItem.Projects);
 	}
 
 	[Fact]
+	[Trait("Label", "Duplicates")]
 	public void Import_GivenLineWithDuplicatedProjects_ShouldSetProjectsAndSkipDuplicates()
 	{
 		// Arrange
@@ -104,7 +106,7 @@ public class TaskItemTests
 		taskItem.Import("x 1 +test +test @home @work +project1 +project2 +project2");
 
 		// Assert
-		Assert.Equal(new string[] { "test", "project1", "project2" }, taskItem.Projects);
+		Assert.Equal(new [] { "test", "project1", "project2" }, taskItem.Projects);
 	}
 
 	[Fact]
@@ -117,10 +119,11 @@ public class TaskItemTests
 		taskItem.Import("x 1 +test @home @work +project1 +project2");
 
 		// Assert
-		Assert.Equal(new string[] { "home", "work" }, taskItem.Contexts);
+		Assert.Equal(new [] { "home", "work" }, taskItem.Contexts);
 	}
 
 	[Fact]
+	[Trait("Label", "Duplicates")]
 	public void Import_GivenLineWithContextsDuplicated_ShouldSetContextsAndSkipDuplicates()
 	{
 		// Arrange
@@ -130,10 +133,11 @@ public class TaskItemTests
 		taskItem.Import("x 1 +test @home @work @work +project1 @work +project2");
 
 		// Assert
-		Assert.Equal(new string[] { "home", "work" }, taskItem.Contexts);
+		Assert.Equal(new [] { "home", "work" }, taskItem.Contexts);
 	}
 
 	[Fact]
+	[Category("Metadata")]
 	public void Import_GivenLineWithMetadata_ShouldSetMetadata()
 	{
 		// Arrange
@@ -149,6 +153,8 @@ public class TaskItemTests
 	}
 
 	[Fact]
+	[Trait("Label", "Duplicates")]
+	[Category("Metadata")]
 	public void Import_GivenLineWithDuplicatedMetadata_ShouldNotThrowException()
 	{
 		// Arrange
