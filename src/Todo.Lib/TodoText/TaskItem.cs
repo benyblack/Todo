@@ -66,9 +66,9 @@ public class TaskItem
 		if (!string.IsNullOrEmpty(this.Priority))
 			items.Add($"({this.Priority})");
 		if (this.CompletionDate != null)
-			items.Add($"{this.CompletionDate.Value.ToString("yyyy-MM-dd")}");
+			items.Add($"{this.CompletionDate.Value:yyyy-MM-dd}");
 		if (this.CreateDate != null)
-			items.Add($"{this.CreateDate.Value.ToString("yyyy-MM-dd")}");
+			items.Add($"{this.CreateDate.Value:yyyy-MM-dd}");
 		if (!string.IsNullOrEmpty(this.Description))
 			items.Add(this.Description);
 		return string.Join(" ", items);
