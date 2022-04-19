@@ -1,15 +1,14 @@
 ﻿using System.IO.Abstractions;
 using Spectre.Console;
 using Todo.Lib.TodoText;
-// See https://aka.ms/new-console-template for more information
+
 var taskItemManager = new TaskItemManager(new FileSystem());
 var taskItems = taskItemManager.GetAll();
 PrintAllTasks();
 char? input = ' ';
 while (input != 'q')
 {
-	//Console.WriteLine("What would you like to do? [(a)dd, (l)ist, (r)emove, (e)dit, (q)uit]");
-	AnsiConsole.MarkupLine("==========================================================");
+	AnsiConsole.MarkupLine("===============================");
 	AnsiConsole.MarkupLine("What would you like to do?");
 	AnsiConsole.MarkupLine("([bold]a[/])dd, ([bold]r[/])emove, ([bold]e[/])dit, ([bold]q[/])uit, ([bold]m[/])ark as done/undone?");
 	input = char.ToLower(Console.ReadKey().KeyChar);

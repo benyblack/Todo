@@ -21,7 +21,7 @@
 	</ItemGroup>
 
 	<ItemGroup>
-		<ProjectReference Include="..\..\src\Todo\Todo.csproj" />
+		<ProjectReference Include="..\..\src\Todo.Console\Todo.Console.csproj" />
 		<ProjectReference Include="..\..\src\Todo.Lib\Todo.Lib.csproj" />
 	</ItemGroup>
 
