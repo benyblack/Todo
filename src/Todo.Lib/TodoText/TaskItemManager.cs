@@ -6,7 +6,7 @@ public class TaskItemManager
 
 	private readonly IFileSystem _fileSystem;
 	private readonly string _filePath;
-	public TaskItemManager(IFileSystem fileSystem, string filePath = "todo.txt")
+	public TaskItemManager(IFileSystem fileSystem, string filePath = ".data/todo.txt")
 	{
 		_fileSystem = fileSystem;
 		_filePath = filePath;
@@ -22,8 +22,7 @@ public class TaskItemManager
 		var taskItems = new List<TaskItem>();
 		foreach (var line in lines)
 		{
-			var taskItem = new TaskItem();
-			taskItem.Import(line);
+			var taskItem = new TaskItem(line);
 			taskItems.Add(taskItem);
 		}
 		return taskItems;
