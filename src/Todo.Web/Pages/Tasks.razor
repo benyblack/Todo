@@ -63,6 +63,7 @@ else
 	{
 		taskItemManager.AddTask(_taskDescription);
 		_taskItems = taskItemManager.GetAll();
+		_taskDescription = "";
 	}
 
 	private void DeleteTask(int taskId)
@@ -73,7 +74,7 @@ else
 
 	private void CompleteTask(int taskId)
 	{
-		taskItemManager.Mark(taskId);
+			taskItemManager.Mark(taskId);
 		_taskItems = taskItemManager.GetAll();
 	}
 }
