@@ -11,4 +11,4 @@ Screenshot:
 ### Web App
 Screenshot:
 
-<img width="1245" alt="image" src="https://user-images.githubusercontent.com/772474/164105995-7fa14356-c770-42ae-ab8c-babe81c6f46c.png">
+<img width="1224" alt="image" src="https://user-images.githubusercontent.com/772474/164112403-21543b22-0e23-4a07-bac6-856b695cf507.png">
