@@ -1,7 +1,8 @@
 ﻿using System.IO.Abstractions;
 
 namespace Todo.Lib.TodoText;
-public class TaskItemManager
+
+public class TaskItemManager : ITaskItemManager
 {
 
 	private readonly IFileSystem _fileSystem;
@@ -33,6 +34,11 @@ public class TaskItemManager
 		TaskItem task = new(taskItemString);
 		if (!_fileSystem.File.Exists(_filePath))
 		{
+			var dir = _fileSystem.Path.GetDirectoryName(_filePath);
+			if (!_fileSystem.Directory.Exists(dir))
+			{
+				_fileSystem.Directory.CreateDirectory(dir);
+			}
 			_fileSystem.File.Create(_filePath).Close();
 		}
 		var text = _fileSystem.File.ReadAllText(_filePath);

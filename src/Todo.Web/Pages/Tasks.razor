@@ -1,0 +1,79 @@
+﻿@page "/"
+
+<PageTitle>Todo Items</PageTitle>
+
+@using Todo.Lib.TodoText
+@inject ITaskItemManager taskItemManager
+
+<h1>Todo</h1>
+
+<div>
+	<input @bind-value="@_taskDescription" placeholder="Enter task description" />
+	<button id="addTask" text="Add Task" @onclick="AddTask">Add Task</button>
+</div>
+
+@if (_taskItems == null)
+{
+	<p><em>Loading...</em></p>
+}
+else
+{
+	<table class="table">
+	<thead>
+		<tr>
+			<th>Id</th>
+			<th>Done</th>
+			<th>Description</th>
+			<th>Actions</th>
+		</tr>
+	</thead>
+	<tbody>
+		@{
+				var counter = 0;
+			}
+			@foreach (var item in _taskItems)
+			{
+				var i = ++counter;
+				<tr>
+					<td>@counter</td>
+					<td>@(item.IsCompleted?"✓":"")</td>
+					<td>@item.Description</td>
+					<td>
+						<button @onclick="() => DeleteTask(i)">Delete</button>
+						<button style="width:80px;" @onclick="() => CompleteTask(i)">
+							@(item.IsCompleted?"UnDone":"Done")
+						</button>
+					</td>
+				</tr>
+			}
+		</tbody>
+	</table>
+}
+
+@code {
+	private List<TaskItem>? _taskItems;
+	private string _taskDescription;
+	protected override void OnInitialized()
+	{
+		//forecasts = await ForecastService.GetForecastAsync(DateTime.Now);
+		_taskItems = taskItemManager.GetAll();
+	}
+
+	private void AddTask()
+	{
+		taskItemManager.AddTask(_taskDescription);
+		_taskItems = taskItemManager.GetAll();
+	}
+
+	private void DeleteTask(int taskId)
+	{
+		taskItemManager.RemoveTask(taskId);
+		_taskItems = taskItemManager.GetAll();
+	}
+
+	private void CompleteTask(int taskId)
+	{
+		taskItemManager.Mark(taskId);
+		_taskItems = taskItemManager.GetAll();
+	}
+}
