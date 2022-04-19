@@ -7,9 +7,15 @@
 
 <h1>Todo</h1>
 
-<div>
-	<input @bind-value="@_taskDescription" placeholder="Enter task description" />
-	<button id="addTask" text="Add Task" @onclick="AddTask">Add Task</button>
+<div class="row">
+	<div class="col-6">
+		<div class="input-group mb-3">
+			<input class="form-control" @bind-value="@_taskDescription" placeholder="Enter task description" />
+			<div class="input-group-append">
+				<button class="btn btn-secondary" id="addTask" text="Add Task" @onclick="AddTask">Add Task</button>
+			</div>
+		</div>
+	</div>
 </div>
 
 @if (_taskItems == null)
@@ -39,8 +45,8 @@ else
 					<td>@(item.IsCompleted?"✓":"")</td>
 					<td>@item.Description</td>
 					<td>
-						<button @onclick="() => DeleteTask(i)">Delete</button>
-						<button style="width:80px;" @onclick="() => CompleteTask(i)">
+						<button class="btn btn-danger" @onclick="() => DeleteTask(i)">Delete</button>
+						<button style="width:80px;" class="btn btn-primary" @onclick="() => CompleteTask(i)">
 							@(item.IsCompleted?"UnDone":"Done")
 						</button>
 					</td>
