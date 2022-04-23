@@ -6,7 +6,7 @@ There is a simple implementation of todo.txt that can be used in the console app
 ### Console App
 Screenshot:
 
-<img width="475" alt="image" src="https://user-images.githubusercontent.com/772474/163889823-4687efd6-89a5-40ae-8d0b-cee01d4712ee.png">
+<img width="476" alt="image" src="https://user-images.githubusercontent.com/772474/164947885-cbf84505-3c1c-4194-a135-5695d6c044c6.png">
 
 ### Web App
 Screenshot:
